@@ -1,0 +1,27 @@
+{
+  "name": "mastertang/emailsdk",
+  "description": "send email",
+  "keywords": [
+    "email",
+    "php"
+  ],
+  "time": "2018-02-24",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "EmailSDK\\": "./"
+    }
+  },
+  "authors": [
+    {
+      "name": "RuiHua Tang",
+      "email": "547740900@qq.com",
+      "homepage": "https://github.com/mastertang/EmailSDK",
+      "role": "Programmer"
+    }
+  ],
+  "require": {
+    "php": ">=7.0.0",
+    "swiftmailer/swiftmailer": "^6.0"
+  }
+}
