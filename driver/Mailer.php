@@ -34,6 +34,16 @@ class Mailer
     protected $emailTitle = "";
 
     /**
+     * @var string 加密方式 tls ｜ ssl
+     */
+    protected $encryption = "tls";
+
+    /**
+     * @var string 内容格式，默认html
+     */
+    protected $contentType = "text/html";
+
+    /**
      * @var array 发送邮件地址
      */
     protected $sendFrom = [];
@@ -122,6 +132,32 @@ class Mailer
     }
 
     /**
+     * 设置加密方式
+     *
+     * @param $encryption
+     * @return $this
+     */
+    public function encryption($encryption)
+    {
+        $encryption = strtolower($encryption);
+        if (in_array($encryption, ["tls", "ssl"])) {
+            $this->encryption = $encryption;
+        }
+        return $this;
+    }
+
+    /**
+     * 设置内容格式
+     *
+     * @param $contentType
+     */
+    public function contentType($contentType)
+    {
+        $this->contentType = $contentType;
+        return $this;
+    }
+
+    /**
      * 设置用户密码
      *
      * @param $password
@@ -129,7 +165,7 @@ class Mailer
      */
     public function password($password)
     {
-        $this->username = $password;
+        $this->password = $password;
         return $this;
     }
 
@@ -175,7 +211,7 @@ class Mailer
             }
         } else if (is_array($emailAddress)) {
             foreach ($emailAddress as $key => $name) {
-                if (!$this->checkEmail($emailAddress)) {
+                if (!$this->checkEmail($key)) {
                     unset($emailAddress[$key]);
                 }
             }
@@ -201,7 +237,7 @@ class Mailer
             }
         } else if (is_array($emailAddress)) {
             foreach ($emailAddress as $key => $name) {
-                if (!$this->checkEmail($emailAddress)) {
+                if (!$this->checkEmail($key)) {
                     unset($emailAddress[$key]);
                 }
             }
@@ -227,7 +263,7 @@ class Mailer
             }
         } else if (is_array($emailAddress)) {
             foreach ($emailAddress as $key => $name) {
-                if (!$this->checkEmail($emailAddress)) {
+                if (!$this->checkEmail($key)) {
                     unset($emailAddress[$key]);
                 }
             }
@@ -253,7 +289,7 @@ class Mailer
             }
         } else if (is_array($emailAddress)) {
             foreach ($emailAddress as $key => $name) {
-                if (!$this->checkEmail($emailAddress)) {
+                if (!$this->checkEmail($key)) {
                     unset($emailAddress[$key]);
                 }
             }
@@ -279,7 +315,7 @@ class Mailer
             }
         } else if (is_array($emailAddress)) {
             foreach ($emailAddress as $key => $name) {
-                if (!$this->checkEmail($emailAddress)) {
+                if (!$this->checkEmail($key)) {
                     unset($emailAddress[$key]);
                 }
             }
@@ -350,13 +386,16 @@ class Mailer
 
         $transport = (new \Swift_SmtpTransport($this->server, $this->serverPort))
             ->setUsername($this->username)
+            ->setEncryption($this->encryption)
             ->setPassword($this->password);
         $mailer    = new \Swift_Mailer($transport);
 
         $message = (new \Swift_Message($this->emailTitle))
             ->setFrom($this->sendFrom)
             ->setTo($this->sendTo)
-            ->setBody($this->body);
+            ->setBody($this->body)
+            ->setContentType($this->contentType)
+            ->setCharset('utf-8');
 
         if (!empty($this->bcc)) {
             $message->setBcc($this->bcc);

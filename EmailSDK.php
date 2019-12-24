@@ -62,13 +62,31 @@ class EmailSDK
         return $this;
     }
 
+    /**
+     * 发送邮件
+     *
+     * @param $title
+     * @param $sendFrom
+     * @param $sendName
+     * @param $sendTo
+     * @param $body
+     * @param string $errorMessage
+     * @param array $failedRecipients
+     * @param array $bcc
+     * @param array $cc
+     * @param array $relayTo
+     * @return bool
+     */
     public function sendEmail(
         $title,
         $sendFrom,
+        $sendName,
         $sendTo,
         $body,
         &$errorMessage = "success",
         &$failedRecipients = [],
+        $encryption = "tls",
+        $contentType = "text/html",
         $bcc = [],
         $cc = [],
         $relayTo = []
@@ -80,11 +98,13 @@ class EmailSDK
             ->username($this->username)
             ->password($this->password)
             ->emailTitle($title)
-            ->sendFrom($sendFrom)
+            ->sendFrom($sendFrom, $sendName)
             ->sendTo($sendTo)
             ->body($body)
             ->bcc($bcc)
             ->cc($cc)
+            ->encryption($encryption)
+            ->contentType($contentType)
             ->replayTo($relayTo)
             ->send();
         if ($result === false) {
